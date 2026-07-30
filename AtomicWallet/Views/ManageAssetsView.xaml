@@ -1,0 +1,147 @@
+<UserControl x:Class="AtomicWallet.Views.ManageAssetsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:ManageAssetsViewModel}">
+    <UserControl.Resources>
+        <!-- Asset chip toggle -->
+        <Style x:Key="ChipToggle" TargetType="ToggleButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="bd" CornerRadius="16" Background="{DynamicResource SurfaceBrush}"
+                                Padding="10,6" Width="116">
+                            <StackPanel Orientation="Horizontal">
+                                <Grid Width="22" Height="22">
+                                    <Border CornerRadius="11"
+                                            Background="{Binding IconColor, Converter={StaticResource HexToBrush}}">
+                                        <TextBlock Text="{Binding Ticker, Converter={StaticResource Initial}}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   Foreground="White" FontWeight="Bold" FontSize="10" />
+                                    </Border>
+                                    <Image Source="{Binding LogoKey, Converter={StaticResource LogoImage}}"
+                                           Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality" />
+                                </Grid>
+                                <TextBlock Text="{Binding Ticker}" Margin="8,0,0,0" VerticalAlignment="Center"
+                                           FontSize="12" />
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.35" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top control row -->
+        <Grid Grid.Row="0" Margin="24,16,16,8">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Search box -->
+                <Border CornerRadius="14" Background="{DynamicResource SurfaceBrush}" Width="220" Height="32">
+                    <Grid>
+                        <TextBlock Text="Search" Foreground="{DynamicResource TextFaintBrush}" Margin="14,0,0,0"
+                                   VerticalAlignment="Center" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchText}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent" BorderThickness="0" Margin="10,0,10,0"
+                                 VerticalContentAlignment="Center" CaretBrush="White"
+                                 Foreground="{DynamicResource TextPrimaryBrush}" />
+                    </Grid>
+                </Border>
+
+                <!-- Hide zero balance -->
+                <ToggleButton Style="{StaticResource Switch}" IsChecked="{Binding HideZeroBalance}"
+                              Margin="28,0,0,0" VerticalAlignment="Center" />
+                <TextBlock Text="Hide zero balance" Foreground="{DynamicResource TextSecondaryBrush}"
+                           Margin="10,0,0,0" VerticalAlignment="Center" />
+
+                <!-- Disable notifications -->
+                <ToggleButton Style="{StaticResource Switch}" IsChecked="{Binding NotificationsDisabled}"
+                              Margin="28,0,0,0" VerticalAlignment="Center" />
+                <TextBlock Text="Disable notifications" Foreground="{DynamicResource TextSecondaryBrush}"
+                           Margin="10,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="Hide all" Cursor="Hand" Command="{Binding HideAllCommand}" Background="Transparent"
+                        BorderThickness="0" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,20,0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock Text="{TemplateBinding Content}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button Content="Cancel" Cursor="Hand" Command="{Binding CancelCommand}" Margin="0,0,16,0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock Text="{TemplateBinding Content}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button Content="Apply" Style="{StaticResource PillSmall}" Width="90" Command="{Binding ApplyCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="14,0,8,8">
+            <StackPanel>
+                <!-- Coins -->
+                <StackPanel Orientation="Horizontal" Margin="10,12,0,8">
+                    <TextBlock Text="Coins" Style="{StaticResource Heading}" />
+                    <ToggleButton Style="{StaticResource Switch}" IsChecked="{Binding CoinsEnabled}"
+                                  Margin="14,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding CoinsView}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Style="{StaticResource ChipToggle}" IsChecked="{Binding IsEnabled}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Tokens -->
+                <StackPanel Orientation="Horizontal" Margin="10,20,0,8">
+                    <TextBlock Text="Tokens" Style="{StaticResource Heading}" />
+                    <ToggleButton Style="{StaticResource Switch}" IsChecked="{Binding TokensEnabled}"
+                                  Margin="14,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding TokensView}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Style="{StaticResource ChipToggle}" IsChecked="{Binding IsEnabled}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

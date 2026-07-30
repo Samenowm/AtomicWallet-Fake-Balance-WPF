@@ -1,0 +1,109 @@
+<UserControl x:Class="AtomicWallet.Views.AssetSendView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:SendViewModel}">
+    <Grid>
+        <Button Style="{StaticResource IconButton}" Command="{Binding CloseCommand}"
+                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,16,0" Width="28" Height="28">
+            <Path Data="{StaticResource IconClose}" Width="18" Height="18" Stretch="Uniform"
+                  Fill="{DynamicResource TextSecondaryBrush}" />
+        </Button>
+
+        <StackPanel HorizontalAlignment="Center" Margin="0,28,0,0" MaxWidth="760" Width="760">
+            <!-- Header -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Grid Width="34" Height="34">
+                    <Border CornerRadius="17" Background="{Binding Coin.IconColor, Converter={StaticResource HexToBrush}}" />
+                    <Image Source="{Binding Coin.LogoKey, Converter={StaticResource LogoImage}}"
+                           Width="34" Height="34" RenderOptions.BitmapScalingMode="HighQuality" />
+                </Grid>
+                <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="18" FontWeight="Medium">
+                    <Run Text="Send " /><Run Text="{Binding Coin.Name, Mode=OneWay}" />
+                    <Run Text="{Binding Coin.Ticker, Mode=OneWay, StringFormat=({0})}"
+                         Foreground="{DynamicResource TextSecondaryBrush}" />
+                </TextBlock>
+            </StackPanel>
+
+            <!-- Address -->
+            <Grid Margin="0,28,0,0">
+                <TextBox Style="{StaticResource UnderlineTextBox}" Text="{Binding AddressText, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Click here to paste address or domain" IsHitTestVisible="False"
+                           VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AddressText}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Path Data="{StaticResource IconCopy}" Width="16" Height="16" Stretch="Uniform"
+                      Fill="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Amount -->
+            <TextBlock Text="Amount" Style="{StaticResource Caption}" Margin="0,20,0,0" />
+            <Grid Margin="0,4,0,0">
+                <TextBox Style="{StaticResource UnderlineTextBox}" FontSize="22"
+                         Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding Coin.Ticker}" FontSize="22" HorizontalAlignment="Right"
+                           VerticalAlignment="Center" />
+            </Grid>
+            <Grid Margin="0,6,0,0">
+                <TextBox Style="{StaticResource UnderlineTextBox}"
+                         Text="{Binding AmountFiatText, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="USD" Foreground="{DynamicResource TextSecondaryBrush}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Available / fee + buttons -->
+            <Grid Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="Available:" Style="{StaticResource Caption}" />
+                    <TextBlock Margin="0,2,0,0">
+                        <Run Text="{Binding Coin.Balance, Mode=OneWay}" FontWeight="Bold" /><Run Text=" " /><Run Text="{Binding Coin.Ticker, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Text="0 USD" Style="{StaticResource Caption}" />
+                    <TextBlock Text="Network fee:" Style="{StaticResource Caption}" Margin="0,10,0,0" />
+                    <TextBlock Text="0.0000022 BTC" FontWeight="Bold" Margin="0,2,0,0" />
+                    <TextBlock Text="0.16 USD" Style="{StaticResource Caption}" />
+                    <TextBlock Text="Estimated time: 1-15 min" Style="{StaticResource Caption}" Margin="0,8,0,0"
+                               Visibility="{Binding FeeOpen, Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <Button Content="SEND ALL" Style="{StaticResource PillSmall}" Width="110"
+                            Command="{Binding SendAllCommand}" />
+                    <Button Content="SET FEE" Style="{StaticResource PillSmall}" Width="110" Margin="0,10,0,0"
+                            Command="{Binding ToggleFeeCommand}"
+                            Visibility="{Binding FeeOpen, Converter={StaticResource BoolToVis}, ConverterParameter=Invert}" />
+                    <Button Content="SET DEFAULT" Style="{StaticResource PillSmall}" Width="110" Margin="0,10,0,0"
+                            Command="{Binding ToggleFeeCommand}"
+                            Visibility="{Binding FeeOpen, Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Fee slider -->
+            <StackPanel Margin="0,12,0,0"
+                        Visibility="{Binding FeeOpen, Converter={StaticResource BoolToVis}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Fees per byte" VerticalAlignment="Center" Style="{StaticResource Caption}" />
+                    <Border Background="{DynamicResource SurfaceAltBrush}" CornerRadius="6" Padding="14,4" Margin="12,0,0,0">
+                        <TextBlock Text="{Binding FeePerByte, StringFormat=0}" />
+                    </Border>
+                    <TextBlock Text="sat/B" VerticalAlignment="Center" Margin="8,0,0,0" Style="{StaticResource Caption}" />
+                </StackPanel>
+                <Slider Minimum="1" Maximum="100" Value="{Binding FeePerByte}" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <Button Content="SEND" Style="{StaticResource PillOutlined}" Width="360" Margin="0,24,0,0"
+                    HorizontalAlignment="Center" Command="{Binding SubmitCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

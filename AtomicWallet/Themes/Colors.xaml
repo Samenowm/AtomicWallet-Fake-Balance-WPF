@@ -1,0 +1,53 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Color tokens (sampled from the reference app + screenshots; see docs/atomic-spec.md) -->
+    <Color x:Key="BgColor">#1F2843</Color>
+    <Color x:Key="RowAltColor">#262E48</Color>
+    <Color x:Key="RowHoverColor">#2C3852</Color>
+    <Color x:Key="SurfaceColor">#2A3552</Color>
+    <Color x:Key="SurfaceAltColor">#343F5C</Color>
+    <Color x:Key="BorderColor">#404A65</Color>
+    <Color x:Key="TabBarColor">#2F3B55</Color>
+
+    <Color x:Key="TextPrimaryColor">#FFFFFF</Color>
+    <Color x:Key="TextSecondaryColor">#8290AD</Color>
+    <Color x:Key="TextMutedColor">#7A859F</Color>
+    <Color x:Key="TextFaintColor">#B8BDCC</Color>
+
+    <Color x:Key="AccentBlueColor">#1F8EFA</Color>
+    <Color x:Key="AccentCyanColor">#00C2FF</Color>
+    <Color x:Key="AccentPurpleColor">#8785FF</Color>
+
+    <Color x:Key="PositiveColor">#16C784</Color>
+    <Color x:Key="NegativeColor">#F75555</Color>
+    <Color x:Key="GoldColor">#F1B70B</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}" />
+    <SolidColorBrush x:Key="RowAltBrush" Color="{StaticResource RowAltColor}" />
+    <SolidColorBrush x:Key="RowHoverBrush" Color="{StaticResource RowHoverColor}" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+    <SolidColorBrush x:Key="TabBarBrush" Color="{StaticResource TabBarColor}" />
+
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}" />
+    <SolidColorBrush x:Key="TextFaintBrush" Color="{StaticResource TextFaintColor}" />
+
+    <SolidColorBrush x:Key="AccentBlueBrush" Color="{StaticResource AccentBlueColor}" />
+    <SolidColorBrush x:Key="AccentCyanBrush" Color="{StaticResource AccentCyanColor}" />
+    <SolidColorBrush x:Key="AccentPurpleBrush" Color="{StaticResource AccentPurpleColor}" />
+    <SolidColorBrush x:Key="PositiveBrush" Color="{StaticResource PositiveColor}" />
+    <SolidColorBrush x:Key="NegativeBrush" Color="{StaticResource NegativeColor}" />
+    <SolidColorBrush x:Key="GoldBrush" Color="{StaticResource GoldColor}" />
+
+    <!-- Accent gradient (logo / highlights): blue -> cyan -->
+    <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,1" EndPoint="1,0">
+        <GradientStop Color="{StaticResource AccentBlueColor}" Offset="0" />
+        <GradientStop Color="{StaticResource AccentCyanColor}" Offset="1" />
+    </LinearGradientBrush>
+
+</ResourceDictionary>

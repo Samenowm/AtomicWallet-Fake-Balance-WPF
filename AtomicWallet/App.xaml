@@ -1,0 +1,77 @@
+<Application x:Class="AtomicWallet.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:AtomicWallet.Converters"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:views="clr-namespace:AtomicWallet.Views">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Colors.xaml" />
+                <ResourceDictionary Source="Themes/Typography.xaml" />
+                <ResourceDictionary Source="Themes/Icons.xaml" />
+                <ResourceDictionary Source="Themes/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:ChangeBrushConverter x:Key="ChangeBrush" />
+            <conv:SignedPercentConverter x:Key="SignedPercent" />
+            <conv:HexToBrushConverter x:Key="HexToBrush" />
+            <conv:InitialConverter x:Key="Initial" />
+            <conv:IconKeyToGeometryConverter x:Key="IconGeometry" />
+            <conv:LogoKeyToImageConverter x:Key="LogoImage" />
+            <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
+            <conv:NotEmptyToVisibilityConverter x:Key="NotEmptyToVis" />
+            <conv:EqualsToVisibilityConverter x:Key="EqualsToVis" />
+            <conv:MatchToTextBrushConverter x:Key="MatchTextBrush" />
+            <conv:MatchParamToTextBrushConverter x:Key="MatchBrush" />
+            <conv:SortArrowConverter x:Key="SortArrow" />
+            <conv:FiatConverter x:Key="Fiat" />
+
+            <DataTemplate DataType="{x:Type vm:PlaceholderViewModel}">
+                <views:PlaceholderView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:WalletViewModel}">
+                <views:WalletView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SwapViewModel}">
+                <views:SwapView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BuyCryptoViewModel}">
+                <views:BuyCryptoView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AssetDetailViewModel}">
+                <views:AssetDetailView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ReceiveViewModel}">
+                <views:AssetReceiveView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SendViewModel}">
+                <views:AssetSendView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+                <views:HistoryView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PerpsViewModel}">
+                <views:PerpsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PolymarketViewModel}">
+                <views:PolymarketView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ManageAssetsViewModel}">
+                <views:ManageAssetsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PortfolioViewModel}">
+                <views:PortfolioView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StakingViewModel}">
+                <views:StakingView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NftGalleryViewModel}">
+                <views:NftGalleryView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

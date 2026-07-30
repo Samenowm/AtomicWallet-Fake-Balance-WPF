@@ -1,0 +1,193 @@
+<UserControl x:Class="AtomicWallet.Views.SwapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:SwapViewModel}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="CoinItem">
+            <StackPanel Orientation="Horizontal">
+                <Grid Width="22" Height="22">
+                    <Border CornerRadius="11" Background="{Binding IconColor, Converter={StaticResource HexToBrush}}" />
+                    <Image Source="{Binding LogoKey, Converter={StaticResource LogoImage}}" Width="22" Height="22"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                </Grid>
+                <TextBlock Text="{Binding Ticker}" Margin="8,0,0,0" VerticalAlignment="Center" FontWeight="Medium" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Two-half tab bar -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Command="{Binding ShowInstantCommand}" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{DynamicResource TabBarBrush}">
+                            <TextBlock Text="Instant Swap" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" FontSize="16"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" x:Name="t" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding SelectedTab}" Value="0">
+                                <Setter TargetName="b" Property="Background" Value="Transparent" />
+                                <Setter TargetName="t" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                <Setter TargetName="t" Property="FontWeight" Value="Medium" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="1" Command="{Binding ShowHistoryCommand}" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{DynamicResource TabBarBrush}">
+                            <TextBlock Text="Order History" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" FontSize="16"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" x:Name="t" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding SelectedTab}" Value="1">
+                                <Setter TargetName="b" Property="Background" Value="Transparent" />
+                                <Setter TargetName="t" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                <Setter TargetName="t" Property="FontWeight" Value="Medium" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
+        <!-- Instant Swap -->
+        <Grid Grid.Row="1" Margin="60,40,60,0"
+              Visibility="{Binding SelectedTab, Converter={StaticResource EqualsToVis}, ConverterParameter=0}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Coin circles -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Width="64" Height="64">
+                    <Border CornerRadius="32"
+                            Background="{Binding FromCoin.IconColor, Converter={StaticResource HexToBrush}}">
+                        <TextBlock Text="{Binding FromCoin.Ticker, Converter={StaticResource Initial}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="White" FontWeight="Bold" FontSize="24" />
+                    </Border>
+                    <Image Source="{Binding FromCoin.LogoKey, Converter={StaticResource LogoImage}}"
+                           Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality" />
+                </Grid>
+                <Grid Grid.Column="1" Width="64" Height="64">
+                    <Border CornerRadius="32"
+                            Background="{Binding ToCoin.IconColor, Converter={StaticResource HexToBrush}}">
+                        <TextBlock Text="{Binding ToCoin.Ticker, Converter={StaticResource Initial}}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="White" FontWeight="Bold" FontSize="24" />
+                    </Border>
+                    <Image Source="{Binding ToCoin.LogoKey, Converter={StaticResource LogoImage}}"
+                           Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality" />
+                </Grid>
+            </Grid>
+
+            <!-- Inputs -->
+            <Grid Grid.Row="1" Margin="0,28,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
+                        Padding="0,6">
+                    <Grid>
+                        <TextBox Style="{StaticResource UnderlineTextBox}" FontSize="22" Background="Transparent"
+                                 Margin="0,0,240,0"
+                                 Text="{Binding FromAmountText, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Command="{Binding SendAllCommand}" Cursor="Hand"
+                                HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,130,0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <TextBlock Text="Send all" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <ComboBox Width="120" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                  ItemsSource="{Binding Coins}" SelectedItem="{Binding FromCoin}"
+                                  ItemTemplate="{StaticResource CoinItem}" />
+                    </Grid>
+                </Border>
+                <Button Grid.Column="1" Command="{Binding FlipCommand}" Cursor="Hand" Background="Transparent"
+                        BorderThickness="0" ToolTip="Swap direction">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <!-- Transparent border fills the cell so the whole area (incl. the icon's gaps) is clickable. -->
+                            <Border Background="Transparent">
+                                <Path x:Name="ic" Data="{StaticResource IconSwap}" Width="20" Height="20"
+                                      Stretch="Uniform" Fill="{DynamicResource TextSecondaryBrush}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="ic" Property="Fill" Value="{DynamicResource TextPrimaryBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Border Grid.Column="2" BorderBrush="{DynamicResource AccentBlueBrush}" BorderThickness="0,0,0,1"
+                        Padding="0,6">
+                    <Grid>
+                        <TextBlock Text="{Binding ToAmount, StringFormat=0.######}" FontSize="22"
+                                   VerticalAlignment="Center" />
+                        <ComboBox Width="120" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                  ItemsSource="{Binding Coins}" SelectedItem="{Binding ToCoin}"
+                                  ItemTemplate="{StaticResource CoinItem}" />
+                    </Grid>
+                </Border>
+            </Grid>
+            <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Margin="0,0,0,-22"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"
+                       Text="{Binding AvailableText}" />
+
+            <!-- Min warning + SWAP + fee -->
+            <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,48,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Visibility="{Binding BelowMinimum, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Foreground="{DynamicResource NegativeBrush}" VerticalAlignment="Center"
+                               Text="The amount is below the minimum for swap" />
+                </StackPanel>
+                <Button Content="SWAP" Style="{StaticResource PillOutlined}" Width="360" Margin="0,16,0,0"
+                        Command="{Binding SwapCommand}" />
+                <TextBlock Text="Network fee" Style="{StaticResource Caption}" HorizontalAlignment="Center"
+                           Margin="0,18,0,0" />
+                <TextBlock Text="0.000042 ETH" HorizontalAlignment="Center" Margin="0,2,0,0" />
+                <TextBlock Text="$0.09" Style="{StaticResource Caption}" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,16"
+                       Style="{StaticResource Caption}"
+                       Text="Swap service is provided through third-party API providers" />
+        </Grid>
+
+        <!-- Order History (empty) -->
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource Caption}" FontSize="14" Text="Your swaps will appear here"
+                   Visibility="{Binding SelectedTab, Converter={StaticResource EqualsToVis}, ConverterParameter=1}" />
+    </Grid>
+</UserControl>

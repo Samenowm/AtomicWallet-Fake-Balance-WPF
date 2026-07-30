@@ -1,0 +1,294 @@
+<UserControl x:Class="AtomicWallet.Views.WalletView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:AtomicWallet.Controls"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:WalletViewModel}">
+    <UserControl.Resources>
+        <!-- Row container: striping + hover, no selection chrome -->
+        <Style x:Key="AssetRow" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bd" Background="{DynamicResource BgBrush}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource RowAltBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource RowHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Column header -->
+        <Grid Grid.Row="0" Margin="20,16,16,10" Height="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.2*" />
+                <ColumnDefinition Width="1.3*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="0.9*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="1.4*" />
+                <ColumnDefinition Width="64" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Search (name column header) -->
+            <Grid Grid.Column="0" VerticalAlignment="Center" MaxWidth="220" HorizontalAlignment="Left">
+                <TextBox Foreground="{DynamicResource TextPrimaryBrush}" Background="Transparent"
+                         BorderThickness="0" FontSize="12"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Search" IsHitTestVisible="False" FontSize="12"
+                           Foreground="{DynamicResource TextSecondaryBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SearchText}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <Button Grid.Column="1" Command="{Binding SortCommand}" CommandParameter="Balance"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=Balance}" />
+                            <TextBlock Text="Balance" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=Balance}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="2" Command="{Binding SortCommand}" CommandParameter="Value"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=Value}" />
+                            <TextBlock Text="Value" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=Value}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="3" Command="{Binding SortCommand}" CommandParameter="Price"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=Price}" />
+                            <TextBlock Text="Price" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=Price}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="4" Command="{Binding SortCommand}" CommandParameter="Change24h"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=Change24h}" />
+                            <TextBlock Text="24h" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=Change24h}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="5" Command="{Binding SortCommand}" CommandParameter="PortfolioPercent"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=PortfolioPercent}" />
+                            <TextBlock Text="Portfolio" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=PortfolioPercent}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="6" Command="{Binding SortCommand}" CommandParameter="MarketCapB"
+                    Cursor="Hand" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Path Width="11" Height="11" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,3,0"
+                                  Fill="{DynamicResource TextPrimaryBrush}"
+                                  Data="{Binding SortAscending, Converter={StaticResource SortArrow}}"
+                                  Visibility="{Binding SortColumn, Converter={StaticResource EqualsToVis}, ConverterParameter=MarketCapB}" />
+                            <TextBlock Text="M. cap" FontSize="12"
+                                       Foreground="{Binding SortColumn, Converter={StaticResource MatchBrush}, ConverterParameter=MarketCapB}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Grid Grid.Column="7" VerticalAlignment="Center">
+                <TextBlock Text="7 days chart" Style="{StaticResource ColumnHeader}" />
+                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Right" Width="28" Height="28"
+                        Command="{Binding ManageAssetsCommand}" ToolTip="Manage assets">
+                    <Path Data="{StaticResource IconFilter}" Width="16" Height="16" Stretch="Uniform"
+                          Fill="{DynamicResource TextSecondaryBrush}" />
+                </Button>
+            </Grid>
+        </Grid>
+
+        <!-- Asset rows -->
+        <ListBox Grid.Row="1" ItemsSource="{Binding Assets}" AlternationCount="2"
+                 ItemContainerStyle="{StaticResource AssetRow}"
+                 Background="Transparent" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="20,0,16,0" Height="60" Background="Transparent" Cursor="Hand">
+                        <Grid.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding DataContext.OpenAssetCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                          CommandParameter="{Binding}" />
+                        </Grid.InputBindings>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2.2*" />
+                            <ColumnDefinition Width="1.3*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1.1*" />
+                            <ColumnDefinition Width="0.9*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1.1*" />
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="64" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Name + badge + chain -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Grid Width="32" Height="32">
+                                <Border CornerRadius="16"
+                                        Background="{Binding IconColor, Converter={StaticResource HexToBrush}}">
+                                    <TextBlock Text="{Binding Ticker, Converter={StaticResource Initial}}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="White" FontWeight="Bold" FontSize="13" />
+                                </Border>
+                                <Image Source="{Binding LogoKey, Converter={StaticResource LogoImage}}"
+                                       Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality" />
+                            </Grid>
+                            <TextBlock Text="{Binding Name}" Margin="12,0,0,0" VerticalAlignment="Center"
+                                       FontSize="14" />
+                            <Border Style="{StaticResource ChainBadge}" Margin="8,0,0,0"
+                                    Visibility="{Binding ChainBadge, Converter={StaticResource NotEmptyToVis}}">
+                                <TextBlock Text="{Binding ChainBadge}" FontSize="10"
+                                           Foreground="{DynamicResource AccentBlueBrush}" />
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Balance (+ tooltip) -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Balance, StringFormat=0.####}" FontSize="14" />
+                            <TextBlock Text="{Binding Ticker}" Margin="5,0,0,0"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14" />
+                            <StackPanel.ToolTip>
+                                <ToolTip>
+                                    <TextBlock Text="{Binding Balance}" />
+                                </ToolTip>
+                            </StackPanel.ToolTip>
+                        </StackPanel>
+
+                        <!-- Value -->
+                        <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource Fiat}">
+                                    <Binding Path="Value" />
+                                    <Binding Path="Symbol" Source="{StaticResource Fx}" />
+                                    <Binding Path="Rate" Source="{StaticResource Fx}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <!-- Price -->
+                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="14"
+                                   Foreground="{DynamicResource TextFaintBrush}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource Fiat}">
+                                    <Binding Path="Price" />
+                                    <Binding Path="Symbol" Source="{StaticResource Fx}" />
+                                    <Binding Path="Rate" Source="{StaticResource Fx}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <!-- 24h -->
+                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="14"
+                                   Text="{Binding Change24h, Converter={StaticResource SignedPercent}}"
+                                   Foreground="{Binding Change24h, Converter={StaticResource ChangeBrush}}" />
+                        <!-- Portfolio -->
+                        <TextBlock Grid.Column="5" VerticalAlignment="Center" FontSize="14"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Text="{Binding PortfolioPercent, StringFormat={}{0:N2}%}" />
+                        <!-- Market cap -->
+                        <TextBlock Grid.Column="6" VerticalAlignment="Center" FontSize="14"
+                                   Foreground="{DynamicResource TextFaintBrush}"
+                                   Text="{Binding MarketCapB, StringFormat=${0:N2}B}" />
+                        <!-- Sparkline -->
+                        <controls:Sparkline Grid.Column="7" Height="34" Margin="0,0,16,0"
+                                            Values="{Binding PriceHistory}"
+                                            Stroke="{Binding SparkColor, Converter={StaticResource HexToBrush}}" />
+                        <!-- Row actions (on hover) -->
+                        <StackPanel Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                    Visibility="{Binding IsMouseOver,
+                                        RelativeSource={RelativeSource AncestorType=ListBoxItem},
+                                        Converter={StaticResource BoolToVis}}">
+                            <Button Style="{StaticResource IconButton}" Width="26" Height="26" Margin="0,0,0,2"
+                                    ToolTip="Refresh"
+                                    Command="{Binding DataContext.RefreshCommand, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Path Data="{StaticResource IconRefresh}" Width="16" Height="16" Stretch="Uniform"
+                                      Fill="{DynamicResource TextSecondaryBrush}" />
+                            </Button>
+                            <Button Style="{StaticResource IconButton}" Width="26" Height="26"
+                                    ToolTip="Manage assets"
+                                    Command="{Binding DataContext.ManageAssetsCommand, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Path Data="{StaticResource IconPlus}" Width="16" Height="16" Stretch="Uniform"
+                                      Fill="{DynamicResource TextSecondaryBrush}" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

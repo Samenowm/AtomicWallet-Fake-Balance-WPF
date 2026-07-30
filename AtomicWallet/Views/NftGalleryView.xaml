@@ -1,0 +1,20 @@
+<UserControl x:Class="AtomicWallet.Views.NftGalleryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AtomicWallet.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:NftGalleryViewModel}">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Width="96" Height="96" CornerRadius="20" Background="{DynamicResource SurfaceBrush}"
+                HorizontalAlignment="Center">
+            <Path Data="{StaticResource IconNft}" Width="48" Height="48" Stretch="Uniform"
+                  Fill="{DynamicResource TextSecondaryBrush}" />
+        </Border>
+        <TextBlock Text="No NFTs yet" Style="{StaticResource Heading}" HorizontalAlignment="Center"
+                   Margin="0,20,0,0" />
+        <TextBlock Text="Your NFT collectibles will appear here." Style="{StaticResource Caption}"
+                   HorizontalAlignment="Center" Margin="0,6,0,0" />
+    </StackPanel>
+</UserControl>
